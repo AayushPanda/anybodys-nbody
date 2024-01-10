@@ -52,7 +52,7 @@ public class BHSimulationGUI {
         JPanel presetPanel = new JPanel();
     
         // Add preset buttons
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= 5; i++) {
             final int presetNumber = i;  // Make a copy to make it effectively final
             JButton presetButton = new JButton(String.valueOf(i));
             presetButton.addActionListener(e -> {
@@ -173,8 +173,8 @@ public class BHSimulationGUI {
                 for (int j = 0; j < cols && planetCount < 25; j++) {
                     double x = (double) WIDTH / 2 + j * gridSpacing - (cols - 1) * gridSpacing / 2.0;
                     double y = (double) HEIGHT / 2 + i * gridSpacing - (rows - 1) * gridSpacing / 2.0;
-                    double vx = angularSpeed * (y - HEIGHT / 2.0);
-                    double vy = -angularSpeed * (x - WIDTH / 2.0);
+                    double vx = 1 * (y - HEIGHT / 2.0) * 0.5;
+                    double vy = -1 * (x - WIDTH / 2.0) * 0.5;
                     addPlanet(m, vx, vy, x, y);
                     planetCount++;
                 }
@@ -188,16 +188,16 @@ public class BHSimulationGUI {
             addPlanet(centralMass, 0, 0, WIDTH / 2, HEIGHT / 2);
 
             // Create orbiting planets forming a cosmic spiral
-            int numPlanets = 50;
+            int numPlanets = 10;
             double spiralFactor = 0.02;
 
             for (int i = 0; i < numPlanets; i++) {
                 double angle = 2 * Math.PI * i / numPlanets;
                 double radius = cosmicRadius + spiralFactor * angle;
-                double x = (double) WIDTH / 2 + radius * Math.cos(angle);
-                double y = (double) HEIGHT / 2 + radius * Math.sin(angle);
-                double vx = 1 * (y - HEIGHT / 2.0) * 3;
-                double vy = -1 * (x - WIDTH / 2.0) * 3;
+                double x = WIDTH/2;
+                double y = HEIGHT/2.0 - radius;
+                double vx = -1 * (y - HEIGHT / 2.0) * 4.5;
+                double vy = 0;
                 addPlanet(2, vx, vy, x, y);
             }
             break;
