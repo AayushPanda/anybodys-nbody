@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="Barnes-Hut:jar">
-    <output-path>$PROJECT_DIR$/classes/artifacts/Barnes_Hut_jar</output-path>
-    <root id="archive" name="Barnes-Hut.jar">
-      <element id="module-output" name="Barnes-Hut" />
-    </root>
-  </artifact>
-</component>
