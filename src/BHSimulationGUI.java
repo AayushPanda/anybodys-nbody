@@ -3,8 +3,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -16,8 +14,8 @@ public class BHSimulationGUI {
     private BHMain simulation;
     private DrawingPanel drawingPanel;
     private ArrayList<Body> planetArray;
-    private int HEIGHT = BHMain.HEIGHT;
-    private int WIDTH = BHMain.WIDTH;
+    private final int HEIGHT = BHMain.HEIGHT;
+    private final int WIDTH = BHMain.WIDTH;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new BHSimulationGUI().createAndShowGUI());
@@ -41,18 +39,19 @@ public class BHSimulationGUI {
 
     private JPanel createControlPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-    
+
         JButton runButton = new JButton("Run Simulation");
         runButton.addActionListener(e -> {
             frame.dispose();
             runSimulation();
         });
-    
+
         // Create a panel for preset buttons
         JPanel presetPanel = new JPanel();
-    
+
+        int n = 5;
         // Add preset buttons
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= n; i++) {
             final int presetNumber = i;  // Make a copy to make it effectively final
             JButton presetButton = new JButton(String.valueOf(i));
             presetButton.addActionListener(e -> {
@@ -60,7 +59,12 @@ public class BHSimulationGUI {
             });
             presetPanel.add(presetButton);
         }
-    
+        JButton clearPresetButton = new JButton("Clear body list");
+        clearPresetButton.addActionListener(e -> {
+            initializePreset(n + 1);
+        });
+        presetPanel.add(clearPresetButton);
+
         tableModel = new DefaultTableModel(new Object[]{"Mass", "Velocity X", "Velocity Y", "Position X", "Position Y", "Delete"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -68,7 +72,7 @@ public class BHSimulationGUI {
                 return true;
             }
         };
-    
+
         tableModel.addTableModelListener(e -> {
             try {
                 int row = e.getFirstRow();
@@ -92,7 +96,7 @@ public class BHSimulationGUI {
                 // Do nothing--errors are from some stupid idiotic swing bug
             }
         });
-    
+
         JTable planetTable = new JTable(tableModel);
         TableColumn deleteColumn = planetTable.getColumnModel().getColumn(5);
         JButton deleteButton = new JButton("Delete");
@@ -102,23 +106,23 @@ public class BHSimulationGUI {
                 deletePlanet(selectedRow);
             }
         });
-    
+
         deleteColumn.setCellRenderer(new ButtonRenderer());
         deleteColumn.setCellEditor(new ButtonEditor(new JCheckBox()));
-    
+
         JScrollPane scrollPane = new JScrollPane(planetTable);
         panel.add(runButton, BorderLayout.NORTH);
         panel.add(scrollPane, BorderLayout.CENTER);
         panel.add(presetPanel, BorderLayout.SOUTH); // Add the preset panel
-    
+
         return panel;
     }
-    
+
 
     // Add this method to initialize preset planetArrays
     private void initializePreset(int presetNumber) {
         // Clear existing data
-        for (int i = planetArray.size()-1; i >= 0; i--) {
+        for (int i = planetArray.size() - 1; i >= 0; i--) {
             deletePlanet(i);
         }
         int n = 20;
@@ -135,7 +139,7 @@ public class BHSimulationGUI {
                     double vx = 1 * (y - (double) HEIGHT / 2);
                     double vy = -1 * (x - (double) WIDTH / 2);
                     //if(rand.nextBoolean()){m*=-1;}
-                    addPlanet(m,vx,vy,x,y);
+                    addPlanet(m, vx, vy, x, y);
                 }
                 break;
             case 2:
@@ -147,7 +151,7 @@ public class BHSimulationGUI {
                     double vy = -1 * (x - WIDTH / 2.0) * 0.5;
                     vx = 0;
                     vy = 0;
-                    addPlanet(m,vx,vy,x,y);
+                    addPlanet(m, vx, vy, x, y);
                 }
                 break;
             case 3:
@@ -163,44 +167,46 @@ public class BHSimulationGUI {
                 }
                 break;
             case 4:
-            int rows = 5;
-            int cols = 5;
-            double gridSpacing = 60;
-            double angularSpeed = 0.03;
+                int rows = 5;
+                int cols = 5;
+                double gridSpacing = 60;
+                double angularSpeed = 0.03;
 
-            int planetCount = 0;
-            for (int i = 0; i < rows && planetCount < 25; i++) {
-                for (int j = 0; j < cols && planetCount < 25; j++) {
-                    double x = (double) WIDTH / 2 + j * gridSpacing - (cols - 1) * gridSpacing / 2.0;
-                    double y = (double) HEIGHT / 2 + i * gridSpacing - (rows - 1) * gridSpacing / 2.0;
-                    double vx = 1 * (y - HEIGHT / 2.0) * 0.5;
-                    double vy = -1 * (x - WIDTH / 2.0) * 0.5;
-                    addPlanet(m, vx, vy, x, y);
-                    planetCount++;
+                int planetCount = 0;
+                for (int i = 0; i < rows && planetCount < 25; i++) {
+                    for (int j = 0; j < cols && planetCount < 25; j++) {
+                        double x = (double) WIDTH / 2 + j * gridSpacing - (cols - 1) * gridSpacing / 2.0;
+                        double y = (double) HEIGHT / 2 + i * gridSpacing - (rows - 1) * gridSpacing / 2.0;
+                        double vx = 1 * (y - HEIGHT / 2.0) * 0.5;
+                        double vy = -1 * (x - WIDTH / 2.0) * 0.5;
+                        addPlanet(m, vx, vy, x, y);
+                        planetCount++;
+                    }
                 }
-            }
-            break;
+                break;
             case 5:
-            double cosmicRadius = 0.4 * WIDTH;
-            double centralMass = 50;
+                double cosmicRadius = 0.4 * WIDTH;
+                double centralMass = 50;
 
-            // Create a central mass with gravitational influence
-            addPlanet(centralMass, 0, 0, WIDTH / 2, HEIGHT / 2);
+                // Create a central mass with gravitational influence
+                addPlanet(centralMass, 0, 0, WIDTH / 2, HEIGHT / 2);
 
-            // Create orbiting planets forming a cosmic spiral
-            int numPlanets = 10;
-            double spiralFactor = 0.02;
+                // Create orbiting planets forming a cosmic spiral
+                int numPlanets = 10;
+                double spiralFactor = 0.02;
 
-            for (int i = 0; i < numPlanets; i++) {
-                double angle = 2 * Math.PI * i / numPlanets;
-                double radius = cosmicRadius + spiralFactor * angle;
-                double x = WIDTH/2;
-                double y = HEIGHT/2.0 - radius;
-                double vx = -1 * (y - HEIGHT / 2.0) * 4.5;
-                double vy = 0;
-                addPlanet(2, vx, vy, x, y);
-            }
-            break;
+                for (int i = 0; i < numPlanets; i++) {
+                    double angle = 2 * Math.PI * i / numPlanets;
+                    double radius = cosmicRadius + spiralFactor * angle;
+                    double x = WIDTH / 2;
+                    double y = HEIGHT / 2.0 - radius;
+                    double vx = -1 * (y - HEIGHT / 2.0) * 4.5;
+                    double vy = 0;
+                    addPlanet(2, vx, vy, x, y);
+                }
+                break;
+            default:
+                // Do nothing
 
         }
         drawingPanel.repaint();
@@ -219,7 +225,7 @@ public class BHSimulationGUI {
     }
 
     private void runSimulation() {
-        for (int i = planetArray.size()-1; i > 0; i--) {
+        for (int i = planetArray.size() - 1; i > 0; i--) {
             if (planetArray.get(i).radius == 0) {
                 planetArray.remove(i);
             } else {
@@ -341,7 +347,7 @@ public class BHSimulationGUI {
                 double mass = Double.parseDouble(massString);
                 double velX = Double.parseDouble(velXString);
                 double velY = Double.parseDouble(velYString);
-                addPlanet(mass,velX,velY,x,y);
+                addPlanet(mass, velX, velY, x, y);
                 drawingPanel.repaint();
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(frame, "Invalid input. Please enter numeric values.");
