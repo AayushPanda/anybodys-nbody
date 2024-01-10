@@ -1,15 +1,16 @@
-import java.awt.Graphics;
+import java.awt.*;
 
 public class Quad {
-    private int depth;  // Depth of this quad in the quad tree where root is depth 0
+    private final double THETA = 0.2;  // Parameter of the Barnes Hut algorithm.
+    private final int depth;  // Depth of this quad in the quad tree where root is depth 0
     private Body body;  // Body or aggregate body represented by this quad
     private Quad NW, NE, SW, SE; // Four sub quadrants: North West, North East, South West, South East
-    private double xMid, yMid;   // Coordinate of center of quad
-    private double length;       // Width and height of quad
-    private final double THETA = 0.2;  // Parameter of the Barnes Hut algorithm.
-                                       // THETA = 0 would give n^2 runtime
-                                       // equivalent to the classic direct-sum
-                                       // algorithm
+    private final double xMid;
+    private final double yMid;   // Coordinate of center of quad
+    private final double length;       // Width and height of quad
+    // THETA = 0 would give n^2 runtime
+    // equivalent to the classic direct-sum
+    // algorithm
 
     public Quad(double xMid, double yMid, double length, int depth) {
         this.body = null;
@@ -73,16 +74,13 @@ public class Quad {
 
         if (isExternal()) {
             b.updateVelocity(this.body);
-        }
-
-        else { // Quad is internal
+        } else { // Quad is internal
             double dx = body.getX() - b.getX();
             double dy = body.getY() - b.getY();
 
             double d = Math.sqrt(dx * dx + dy * dy);
-            double s = length;
 
-            if (s / d < THETA) {
+            if (length / d < THETA) {
                 b.updateVelocity(this.body);
             } else {
                 NW.updateVelocityOf(b);
