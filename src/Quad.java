@@ -75,8 +75,8 @@ public class Quad {
         if (isExternal()) {
             b.updateVelocity(this.body);
         } else { // Quad is internal
-            double dx = body.getX() - b.getX();
-            double dy = body.getY() - b.getY();
+            double dx = body.xPos - b.xPos;
+            double dy = body.yPos - b.yPos;
 
             double d = Math.sqrt(dx * dx + dy * dy);
 
@@ -100,8 +100,8 @@ public class Quad {
      * Returns whether body b is positioned within this quad
      */
     public boolean contains(Body b) {
-        double x = b.getX();
-        double y = b.getY();
+        double x = b.xPos;
+        double y = b.yPos;
         return (x >= (xMid - length / 2) && x <= (xMid + length / 2) && y >= (yMid - length / 2)
                 && y <= (yMid + length / 2));
     }

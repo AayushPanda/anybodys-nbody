@@ -4,9 +4,11 @@ public class Body {
     private final double G = 1E5;     // Gravity strength
     private final double DAMP = 100; // Damping strength used in updatePosition()
     final double DT = BHMain.DT / 1000.0;      // Time step in seconds
-    private double xPos, yPos;
-    private double xVel, yVel;
-    private double radius;
+    double xPos;
+    double yPos;
+    double xVel;
+    double yVel;
+    double radius;
     private double mass;
 
 
@@ -76,38 +78,4 @@ public class Body {
         yVel += DT * Fy / mass;
     }
 
-
-    double getX() {
-        return xPos;
-    }
-
-    //setters
-    void setX(double x) {
-        xPos = x;
-    }
-
-    double getY() {
-        return yPos;
-    }
-
-    void setY(double y) {
-        yPos = y;
-    }
-
-    double getRadius() {
-        return radius;
-    }
-
-    void setRadius(double r) {
-        radius = r;
-        mass = Math.PI * radius * radius;
-    }
-
-    void setVelocityX(double vx) {
-        xVel = vx;
-    }
-
-    void setVelocityY(double vy) {
-        yVel = vy;
-    }
 }

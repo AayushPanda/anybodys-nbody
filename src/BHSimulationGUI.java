@@ -109,10 +109,10 @@ public class BHSimulationGUI {
 
     private void runSimulation() {
         for (int i = planetArray.size()-1; i > 0; i--) {
-            if (planetArray.get(i).getRadius() == 0) {
+            if (planetArray.get(i).radius == 0) {
                 planetArray.remove(i);
             } else {
-                planetArray.get(i).setY(BHMain.HEIGHT - planetArray.get(i).getY());
+                planetArray.get(i).yPos = BHMain.HEIGHT - planetArray.get(i).yPos;
             }
         }
         simulation = new BHMain(planetArray);
@@ -125,23 +125,23 @@ public class BHSimulationGUI {
             switch (column) {
                 case 0:
                     // Mass column
-                    planetArray.get(row).setRadius(value);
+                    planetArray.get(row).radius = value;
                     break;
                 case 1:
                     // Velocity X column
-                    planetArray.get(row).setVelocityX(value);
+                    planetArray.get(row).xVel = value;
                     break;
                 case 2:
                     // Velocity Y column
-                    planetArray.get(row).setVelocityY(value);
+                    planetArray.get(row).yVel = value;
                     break;
                 case 3:
                     // Position X column
-                    planetArray.get(row).setX(value);
+                    planetArray.get(row).xPos = value;
                     break;
                 case 4:
                     // Position Y column
-                    planetArray.get(row).setY(value);
+                    planetArray.get(row).yPos = value;
                     break;
             }
         } catch (NumberFormatException e) {

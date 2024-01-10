@@ -1,11 +1,21 @@
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class BHMain {
     public static final boolean DRAW_QUADS = true;
@@ -48,7 +58,7 @@ public class BHMain {
         frame.setVisible(true);
         time = System.currentTimeMillis();
 
-        addCircleBodies(n, m);
+        addRandomBodies(n, m);
         buildBarnesHutTree();
 
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -58,7 +68,7 @@ public class BHMain {
     }
 
     public static void main(String[] args) {
-        BHMain sim = new BHMain(2, 3);
+        BHMain sim = new BHMain(5000, 1);
     }
 
     private void addRandomBodies(int n, float m) {
@@ -161,8 +171,11 @@ public class BHMain {
             // } catch (InterruptedException e) {
             //     e.printStackTrace();
             // }
+            // Disabled parallel streams because colouring negative mass bodies is not thread safe--it causes flickering due to global colour when drawing
 
             for (Body b : bodies) {
+                double vel = (b.xVel * b.xVel + b.yVel * b.yVel);
+
                 b.drawBody(g2d);
             }
 
