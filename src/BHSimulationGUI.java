@@ -243,6 +243,7 @@ public class BHSimulationGUI {
                 case 0:
                     // Mass column
                     planetArray.get(row).radius = value;
+                    if(value < 0){throw new NumberFormatException();}
                     break;
                 case 1:
                     // Velocity X column
@@ -262,7 +263,7 @@ public class BHSimulationGUI {
                     break;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(frame, "Invalid input. Please enter numeric values.");
+            JOptionPane.showMessageDialog(frame, "Invalid input. Please enter valid numeric values.");
         }
     }
 
@@ -345,12 +346,14 @@ public class BHSimulationGUI {
 
             try {
                 double mass = Double.parseDouble(massString);
+                if(mass < 0){throw new NumberFormatException();}
+
                 double velX = Double.parseDouble(velXString);
                 double velY = Double.parseDouble(velYString);
                 addPlanet(mass, velX, velY, x, y);
                 drawingPanel.repaint();
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(frame, "Invalid input. Please enter numeric values.");
+                JOptionPane.showMessageDialog(frame, "Invalid input. Please enter valid numeric values.");
             }
         }
     }

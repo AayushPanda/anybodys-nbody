@@ -162,22 +162,22 @@ public class BHMain {
             //g2d.setColor(Color.WHITE);
 
             // Draw all Bodies in Body array using parallel streams
-            // try {
-            //     List<Callable<Void>> drawTasks = bodies.stream().map(body -> (Callable<Void>) () -> {
-            //         body.drawBody(g2d);
-            //         return null;
-            //     }).collect(Collectors.toList());
-            //     executorService.invokeAll(drawTasks);
-            // } catch (InterruptedException e) {
-            //     e.printStackTrace();
-            // }
+            try {
+                List<Callable<Void>> drawTasks = bodies.stream().map(body -> (Callable<Void>) () -> {
+                    body.drawBody(g2d);
+                    return null;
+                }).collect(Collectors.toList());
+                executorService.invokeAll(drawTasks);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             // Disabled parallel streams because colouring negative mass bodies is not thread safe--it causes flickering due to global colour when drawing
 
-            for (Body b : bodies) {
-                double vel = (b.xVel * b.xVel + b.yVel * b.yVel);
+            // for (Body b : bodies) {
+            //     double vel = (b.xVel * b.xVel + b.yVel * b.yVel);
 
-                b.drawBody(g2d);
-            }
+            //     b.drawBody(g2d);
+            // }
 
             if (DRAW_QUADS) {
                 g2d.setColor(Color.GRAY);
