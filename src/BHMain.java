@@ -29,6 +29,7 @@ public class BHMain {
     private final MyPanel panel;
     private long time;
 
+    // Called by BHSimulationGUI
     public BHMain(ArrayList<Body> bodies) {
         this.bodies = bodies;
         panel = new MyPanel();
@@ -40,17 +41,18 @@ public class BHMain {
         frame.setVisible(true);
         time = System.currentTimeMillis();
 
-        buildBarnesHutTree();
+        buildBHTree();
 
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        Timer myTimer = new Timer(DT, new TimerListener());
-        myTimer.start();
+        Timer timer = new Timer(DT, new TimerListener());
+        timer.start();
     }
 
+    // For running on its own
     public BHMain(int n, int m) {
         panel = new MyPanel();
-        panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        panel.setSize(new Dimension(WIDTH, HEIGHT));
         frame = new JFrame();
         frame.add(panel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -59,7 +61,7 @@ public class BHMain {
         time = System.currentTimeMillis();
 
         addRandomBodies(n, m);
-        buildBarnesHutTree();
+        buildBHTree();
 
         executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
@@ -115,7 +117,7 @@ public class BHMain {
         }
     }
 
-    void buildBarnesHutTree() {
+    void buildBHTree() {
         root = new Quad(WIDTH / 2.0, HEIGHT / 2.0, WIDTH, 0);
         for (Body b : bodies) {
             root.insert(b);
@@ -127,7 +129,7 @@ public class BHMain {
             b.updatePosition();
             root.updateVelocityOf(b);
         }
-        buildBarnesHutTree();
+        buildBHTree();
     }
 
     int calcFrameRate() {
@@ -153,6 +155,11 @@ public class BHMain {
 
             g2d.setBackground(Color.BLACK);
             g2d.clearRect(0, 0, getWidth(), getHeight());
+            
+            if (DRAW_QUADS) {
+                g2d.setColor(Color.GRAY);
+                root.drawAll(g2d);
+            }
 
             g2d.scale(1, -1);
             g2d.translate(0, -getHeight());
@@ -179,10 +186,6 @@ public class BHMain {
             //     b.drawBody(g2d);
             // }
 
-            if (DRAW_QUADS) {
-                g2d.setColor(Color.GRAY);
-                root.drawAll(g2d);
-            }
         }
     }
 }

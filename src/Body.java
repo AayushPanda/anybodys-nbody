@@ -1,8 +1,9 @@
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics2D;
 
 public class Body {
     private final double G = 1E5;     // Gravity strength
-    private final double DAMP = 100; // Damping strength used in updatePosition()
+    private final double DAMP = 90; // Damping strength
     final double DT = BHMain.DT / 1000.0;      // Time step in seconds
     double xPos;
     double yPos;
@@ -21,12 +22,7 @@ public class Body {
         this.mass = Math.PI * radius * radius; // Mass proportional to area
     }
 
-    /*
-     * Combines this body with another body and returns the aggregate body.
-     *
-     * Velocity is not calculated because position will be updated as the
-     * contained bodies are updated individually.
-     */
+    // Combine two bodies into one
     public Body combine(Body b) {
         double m = mass + b.mass;
         double r = Math.sqrt(m / (Math.PI));
@@ -35,9 +31,7 @@ public class Body {
         return new Body(x, y, 0, 0, r);
     }
 
-    /*
-     * Draw this body as a circle centered on xPos and yPos
-     */
+
     void drawBody(Graphics2D g2d) {
         int diameter = (int) Math.abs(2 * radius);
         int x = (int) (xPos - radius);
@@ -50,10 +44,7 @@ public class Body {
         g2d.fillOval(x, y, diameter, diameter);
     }
 
-    /*
-     * Updates the position change of this body due to its velocity and
-     * velocity change of this body due to force from Body b
-     */
+    // Rectangle integral approximation
     void updatePosition() {
         xPos += DT * xVel;
         yPos += DT * yVel;

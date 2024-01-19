@@ -1,16 +1,13 @@
-import java.awt.*;
+import java.awt.Graphics;
 
 public class Quad {
-    private final double THETA = 0.2;  // Parameter of the Barnes Hut algorithm.
-    private final int depth;  // Depth of this quad in the quad tree where root is depth 0
-    private Body body;  // Body or aggregate body represented by this quad
-    private Quad NW, NE, SW, SE; // Four sub quadrants: North West, North East, South West, South East
+    private final double THETA = 0.2;  // BH parameter
+    private final int depth;  // Depth in quadtree
+    private Body body;  // Contained body or aggregate body represented by this quad
+    private Quad NW, NE, SW, SE;
     private final double xMid;
-    private final double yMid;   // Coordinate of center of quad
-    private final double length;       // Width and height of quad
-    // THETA = 0 would give n^2 runtime
-    // equivalent to the classic direct-sum
-    // algorithm
+    private final double yMid;
+    private final double length;
 
     public Quad(double xMid, double yMid, double length, int depth) {
         this.body = null;
@@ -27,28 +24,25 @@ public class Quad {
             return;
         }
 
-        // If quad is internal...
+        // Internal node
         if (!isExternal()) {
-            // Update aggregate mass and center of mass
             body = body.combine(b);
-            // Recursively add body b to correct subquad
-            insertToSubquadrants(b);
+            insertToSubQuad(b);
         }
 
-        // Else quad is external and therefore now has 2 bodies...
+        // else external node
         else {
-            // Tree depth is limited. Arbitrarily close or numerous bodies are
-            // approximated as a single body by combining them without creating subquads
+            // arbitrary threshold of depth 50
             if (depth < 50) {
-                // The quad is subdivided
+                // recurse
                 NW = NW();
                 NE = NE();
+                SW = SE();
                 SW = SW();
-                SE = SE();
 
-                // Both bodies are inserted recursively to the correct sub-quad
-                insertToSubquadrants(body);
-                insertToSubquadrants(b);
+                // Both children are inserted recursively
+                insertToSubQuad(body);
+                insertToSubQuad(b);
             }
 
             // Update aggregate body mass and center of mass
@@ -56,7 +50,7 @@ public class Quad {
         }
     }
 
-    public void insertToSubquadrants(Body b) {
+    public void insertToSubQuad(Body b) {
         if (NW.contains(b))
             NW.insert(b);
         else if (NE.contains(b))
@@ -96,9 +90,7 @@ public class Quad {
         return (NW == null && NE == null && SW == null && SE == null);
     }
 
-    /*
-     * Returns whether body b is positioned within this quad
-     */
+    // Checks whether body in bounds of quad
     public boolean contains(Body b) {
         double x = b.xPos;
         double y = b.yPos;
